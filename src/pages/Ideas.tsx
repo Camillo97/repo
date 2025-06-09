@@ -1,9 +1,9 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { BookOpen, ShoppingCart, BookText } from "lucide-react";
+import ProductModal from "@/components/ProductModal";
 
 const categories = [
   { id: "all", name: "Wszystkie", icon: BookOpen },
@@ -91,6 +91,8 @@ const automationIdeas = [
 
 const Ideas = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedProduct, setSelectedProduct] = useState<typeof automationIdeas[0] | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const filteredIdeas = selectedCategory === "all" 
     ? automationIdeas 
@@ -103,6 +105,11 @@ const Ideas = () => {
       case "Zaawansowany": return "bg-red-100 text-red-800";
       default: return "bg-gray-100 text-gray-800";
     }
+  };
+
+  const handleLearnMore = (idea: typeof automationIdeas[0]) => {
+    setSelectedProduct(idea);
+    setIsModalOpen(true);
   };
 
   return (
@@ -193,7 +200,10 @@ const Ideas = () => {
                       <p className="font-bold text-lg text-primary">{idea.price}</p>
                       <p className="text-xs text-muted-foreground">implementacja</p>
                     </div>
-                    <Button className="px-6 hover:shadow-md transition-all duration-200">
+                    <Button 
+                      className="px-6 hover:shadow-md transition-all duration-200"
+                      onClick={() => handleLearnMore(idea)}
+                    >
                       Dowiedz się więcej
                     </Button>
                   </div>
@@ -215,6 +225,12 @@ const Ideas = () => {
           </Button>
         </div>
       </div>
+
+      <ProductModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        product={selectedProduct}
+      />
     </div>
   );
 };
